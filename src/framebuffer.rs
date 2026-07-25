@@ -80,11 +80,14 @@ impl Framebuffer {
         self.cells = new_cells;
     }
 
-    // dibuja toda la grilla escalada a la ventana, celda por celda,
-    // usando point() como unica primitiva de dibujo
-    pub fn render(&self, d: &mut RaylibDrawHandle, cell_size: i32) {
-        for y in 0..self.height {
-            for x in 0..self.width {
+    // dibuja la parte de la grilla que entra en la ventana actual, celda
+    // por celda, usando point() como unica primitiva de dibujo.
+    // visible_cols/visible_rows es cuantas celdas caben en la ventana en
+    // este momento (puede ser menor que width/height si la ventana esta
+    // chica, o toda la grilla si la ventana es igual o mas grande)
+    pub fn render(&self, d: &mut RaylibDrawHandle, cell_size: i32, visible_cols: i32, visible_rows: i32) {
+        for y in 0..visible_rows.min(self.height) {
+            for x in 0..visible_cols.min(self.width) {
                 let color = self.get_color(x, y);
                 for dy in 0..cell_size {
                     for dx in 0..cell_size {
